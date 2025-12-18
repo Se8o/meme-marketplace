@@ -4,7 +4,7 @@ import { useFetch } from '../hooks/useFetch';
 import { useCart } from '../context/CartContext';
 import { Loading } from '../components/Loading';
 import { ErrorMessage } from '../components/ErrorMessage';
-import { API_URL, getMemeRating, getMemeCategory } from '../constants';
+import { API_URL, getMemeRating, getMemeCategory, getMemePrice } from '../constants';
 
 export function MemeDetail() {
   const { id } = useParams();
@@ -77,7 +77,7 @@ export function MemeDetail() {
 
           <div className="detail-info-item">
             <strong>Cena:</strong>
-            <span className="detail-price">{meme.rating * 25} Kč</span>
+            <span className="detail-price">{getMemePrice(meme.rating)} Kč</span>
           </div>
 
           <button

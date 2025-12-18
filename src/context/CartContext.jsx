@@ -1,12 +1,13 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo, useCallback } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { getMemePrice } from '../constants';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useLocalStorage('cart', []);
 
-  const addItem = (meme) => {
+  const addItem = useCallback((meme) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === meme.id);
       
@@ -20,13 +21,13 @@ export function CartProvider({ children }) {
       
       return [...prevItems, { ...meme, count: 1 }];
     });
-  };
+  }, [setCartItems]);
 
-  const removeItem = (id) => {
+  const removeItem = useCallback((id) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
+  }, [setCartItems]);
 
-  const decreaseCount = (id) => {
+  const decreaseCount = useCallback((id) => {
     setCartItems((prevItems) => {
       const item = prevItems.find((item) => item.id === id);
       
@@ -40,22 +41,22 @@ export function CartProvider({ children }) {
           : item
       );
     });
-  };
+  }, [setCartItems]);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCartItems([]);
-  };
+  }, [setCartItems]);
 
-  const getTotalPrice = () => {
+  const getTotalPrice = useCallback(() => {
     return cartItems.reduce((total, item) => {
-      const price = item.rating * 25;
+      const price = getMemePrice(item.rating);
       return total + (price * item.count);
     }, 0);
-  };
+  }, [cartItems]);
 
-  const getItemCount = () => {
+  const getItemCount = useCallback(() => {
     return cartItems.reduce((total, item) => total + item.count, 0);
-  };
+  }, [cartItems]);
 
   const value = useMemo(
     () => ({

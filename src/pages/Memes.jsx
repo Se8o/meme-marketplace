@@ -5,7 +5,7 @@ import { useDebounce } from '../hooks/useDebounce';
 import { useCart } from '../context/CartContext';
 import { Loading } from '../components/Loading';
 import { ErrorMessage } from '../components/ErrorMessage';
-import { API_URL, MEME_CATEGORIES, getMemeRating, getMemeCategory } from '../constants';
+import { API_URL, MEME_CATEGORIES, getMemeRating, getMemeCategory, DEBOUNCE_DELAY } from '../constants';
 
 export function Memes() {
   const { data, loading, error } = useFetch(API_URL);
@@ -16,7 +16,7 @@ export function Memes() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
 
-  const debouncedSearch = useDebounce(searchTerm, 300);
+  const debouncedSearch = useDebounce(searchTerm, DEBOUNCE_DELAY);
 
   const memesWithExtra = useMemo(() => {
     if (!data?.data?.memes) return [];
