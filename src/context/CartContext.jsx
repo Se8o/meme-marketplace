@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const CartContext = createContext();
@@ -57,18 +57,21 @@ export function CartProvider({ children }) {
     return cartItems.reduce((total, item) => total + item.count, 0);
   };
 
+  const value = useMemo(
+    () => ({
+      cartItems,
+      addItem,
+      removeItem,
+      decreaseCount,
+      clearCart,
+      getTotalPrice,
+      getItemCount,
+    }),
+    [cartItems]
+  );
+
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        addItem,
-        removeItem,
-        decreaseCount,
-        clearCart,
-        getTotalPrice,
-        getItemCount,
-      }}
-    >
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

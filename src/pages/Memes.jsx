@@ -5,9 +5,7 @@ import { useDebounce } from '../hooks/useDebounce';
 import { useCart } from '../context/CartContext';
 import { Loading } from '../components/Loading';
 import { ErrorMessage } from '../components/ErrorMessage';
-
-const MEME_CATEGORIES = ['animals', 'celebrities', 'gaming', 'school', 'random'];
-const API_URL = 'https://api.imgflip.com/get_memes';
+import { API_URL, MEME_CATEGORIES, getMemeRating, getMemeCategory } from '../constants';
 
 export function Memes() {
   const { data, loading, error } = useFetch(API_URL);
@@ -25,8 +23,8 @@ export function Memes() {
     
     return data.data.memes.map((meme) => ({
       ...meme,
-      rating: Math.floor(Math.random() * 5) + 1,
-      category: MEME_CATEGORIES[Math.floor(Math.random() * MEME_CATEGORIES.length)],
+      rating: getMemeRating(meme.id),
+      category: getMemeCategory(meme.id),
     }));
   }, [data]);
 

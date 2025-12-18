@@ -8,25 +8,33 @@ export function useFetch(url) {
   useEffect(() => {
     if (!url) return;
 
+    const abortController = new AbortController();
+
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, { signal: abortController.signal });
         if (!response.ok) {
           throw new Error('Nepodařilo se načíst data');
         }
         const result = await response.json();
         setData(result);
       } catch (err) {
-        setError(err.message);
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
+
+    return () => {
+      abortController.abort();
+    };
   }, [url]);
 
   return { data, loading, error };
